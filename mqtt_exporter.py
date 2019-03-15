@@ -294,7 +294,7 @@ def _mqtt_init(mqtt_config, metrics):
 
 def _export_to_prometheus(name, metric, labels):
     """Export metric and labels to prometheus."""
-    valid_types = ['gauge', 'counter', 'summary', 'histogram']
+    valid_types = ['gauge', 'counter','countabs' , 'summary', 'histogram']
     if metric['type'] not in valid_types:
         logging.warning(
             "Metric type: {0}, is not a valid metric type. Must be one of: {1}".format(metric['type'], valid_types))
@@ -307,6 +307,7 @@ def _export_to_prometheus(name, metric, labels):
 
     prometheus_metric_types = {'gauge': gauge,
                                'counter': counter,
+                               'countabs': counter,
                                'summary': summary,
                                'histogram': histogram}
 
@@ -330,6 +331,7 @@ def get_prometheus_metric(label_names, label_values, metric, name, buckets=None)
         metric['prometheus_metric'] = {}
         prometheus_metric_types = {'gauge': prometheus.Gauge,
                                    'counter': prometheus.Counter,
+                                   'countabs': prometheus.Counter,
                                    'summary': prometheus.Summary,
                                    'histogram': prometheus.Histogram}
 
@@ -350,6 +352,9 @@ def counter(label_names, label_values, metric, name, value):
     """Define metric as Counter, increasing it by 'value'"""
     get_prometheus_metric(label_names, label_values, metric, name).inc(value)
 
+def countabs(label_names, label_values, metric, name, value):
+    """Define metric as Counter, observing 'value'"""
+    get_prometheus_metric(label_names, label_values, metric, name).observe(value)
 
 def summary(label_names, label_values, metric, name, value):
     """Define metric as summary, observing 'value'"""
