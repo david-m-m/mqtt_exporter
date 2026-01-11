@@ -290,7 +290,7 @@ def _on_message(client, userdata, msg):
 
 def _mqtt_init(mqtt_config, metrics):
     """Setup mqtt connection"""
-    mqtt_client = mqtt.Client(mqtt_client.CallbackAPIVersion.VERSION1,userdata=metrics)
+    mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1,userdata=metrics)
     mqtt_client.on_connect = _on_connect
     mqtt_client.on_message = _on_message
 
